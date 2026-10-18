@@ -18,9 +18,12 @@ public class WebDriverFactory
         };
     }
 
+    
+    
     private static IWebDriver CreateChrome(BrowserOptions browserOptions)
     {
         var options = new ChromeOptions();
+
         if (browserOptions.Headless)
         {
             options.AddArgument("--headless");
@@ -30,22 +33,38 @@ public class WebDriverFactory
         {
             options.AddArgument("--start-maximized");
         }
+
         options.AddArgument("--guest");
-            //return new ChromeDriver(options);
-            if (browserOptions.Remote)
-                if (browserOptions.Remote)
-                {
-                    var seleniumUrl = Environment.GetEnvironmentVariable("JENKINS_URL") != null
-                        ? "http://selenium-chrome:4444"
-                        : "http://localhost:4444";
+        options.EnableDownloads = true;
+        options.AddUserProfilePreference(
+            "download.prompt_for_download", false);
 
-                    return new RemoteWebDriver(
-                        new Uri(seleniumUrl),
-                        options);
-                }
+        options.AddUserProfilePreference(
+            "plugins.always_open_pdf_externally", true);
 
-            return new ChromeDriver(options);
+        if (browserOptions.Remote)
+        {
+            var seleniumUrl = Environment.GetEnvironmentVariable("JENKINS_URL") != null
+                ? "http://selenium-chrome:4444"
+                : "http://localhost:4444";
+
+            return new RemoteWebDriver(new Uri(seleniumUrl), options);
+        }
+
+        var downloadPath = Path.Combine(
+            TestContext.CurrentContext.WorkDirectory,
+            "Downloads");
+
+        Directory.CreateDirectory(downloadPath);
+
+        options.AddUserProfilePreference("download.default_directory", downloadPath);
+        options.AddUserProfilePreference("download.prompt_for_download", false);
+        options.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+
+        return new ChromeDriver(options);
     }
+
+
 
     private static IWebDriver CreateEdge(BrowserOptions browserOptions)
     {

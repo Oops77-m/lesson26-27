@@ -1,0 +1,3 @@
+Current URL after PDF click: https://www.saucedemo.com/checkout-complete.html
+Window handles: CC3DE3105D383FFBF057C5EEE82603E3
+Downloaded files: 
