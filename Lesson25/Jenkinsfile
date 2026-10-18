@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/zniska/MySolutionTMS', branch: 'main'
+                git url: 'https://github.com/Oops77-m/lesson26-27.git', branch: 'master'
             }
         }
 
